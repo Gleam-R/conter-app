@@ -1,66 +1,58 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import React, { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [seconds, setSeconds] = useState(0);
+  const [running, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let interval;
+    if (running) {
+      interval = setInterval(() => {
+        setSeconds((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [running]);
+
+  function handleStart() {
+    setIsRunning(true);
+  }
+
+  function handleStop() {
+    setIsRunning(false);
+  }
+
+  function handleReset() {
+    setSeconds(0);
+    setIsRunning(false);
+  }
+
+  // 🕒 Konversi detik ke jam, menit, detik
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  // Format biar ada 0 di depan (misal 01:09:05)
+  const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="min-h-screen flex flex-col justify-center items-center gap-6">
+      <h1 className="text-blue-600 font-semibold text-3xl">Timer App</h1>
+      <h2 className="text-amber-600 font-bold text-5xl">{formattedTime}</h2>
+
+      <div className="flex gap-4">
+        <button onClick={handleStart} className="px-4 py-2 bg-green-500 text-white rounded">
+          Start
+        </button>
+        <button onClick={handleStop} className="px-4 py-2 bg-red-500 text-white rounded">
+          Stop
+        </button>
+        <button onClick={handleReset} className="px-4 py-2 bg-gray-300 text-black rounded">
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
