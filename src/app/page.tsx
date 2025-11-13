@@ -7,7 +7,7 @@ export default function Home() {
   const [running, setIsRunning] = useState(false);
 
   useEffect(() => {
-    let interval;
+    let interval: NodeJS.Timeout;
     if (running) {
       interval = setInterval(() => {
         setSeconds((prev) => prev + 1);
